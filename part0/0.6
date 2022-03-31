@@ -1,0 +1,24 @@
+note over browser:
+user inputs new content to the form and clicking save button
+end note
+
+note over browser:
+'onsubmit' handler gets executed: we prevent the default behavior of the
+form and send XMLHttpRequest request instead.
+also we push a new note into the notes list and rerender the notes list
+end note
+
+browser->server: HTTP POST https://studies.cs.helsinki.fi/exampleapp/new_note_spa
+
+note over server:
+Backend creates a new note object in memory and pushes it into the
+notes list.
+Content of the new note is based on the req.body
+end note
+
+server-->browser: HTTP STATUS 201 - { message: "note created" }
+
+note over browser:
+Basically in this case server just confirms that the operation was 
+successfull
+end note

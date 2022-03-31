@@ -1,0 +1,33 @@
+note over browser:
+user inputs new content to the form and clicking save button
+end note
+
+note over browser:
+'submit' event of the form fires 
+end note
+
+browser->server: HTTP POST https://studies.cs.helsinki.fi/exampleapp/new_note
+
+note over server:
+Backend creates a new note object in memory. 
+Data of the new note is based on the req.body
+end note
+
+server-->browser: HTTP STATUS 302 - Redirect to Location /notes
+browser->server: HTTP GET https://studies.cs.helsinki.fi/exampleapp/notes
+server-->browser: HTML-code
+browser->server: HTTP GET https://studies.cs.helsinki.fi/exampleapp/main.css
+server-->browser: main.css
+browser->server: HTTP GET https://studies.cs.helsinki.fi/exampleapp/main.js
+server-->browser: main.js
+
+note over browser:
+browser starts executing js-code that requests JSON data from server 
+end note
+
+browser->server: HTTP GET https://studies.cs.helsinki.fi/exampleapp/data.json
+server-->browser: data.json content
+
+note over browser:
+The content of the notes list gets updated after this step
+end note
