@@ -1,4 +1,13 @@
-const CountryDetails = ({ name, capital, area, languages, flags }) => {
+import WeatherInfo from "./WeatherInfo";
+
+const CountryDetails = ({
+  name,
+  capital,
+  capitalInfo,
+  area,
+  languages,
+  flags,
+}) => {
   return (
     <div>
       <h1>{name.common}</h1>
@@ -12,6 +21,7 @@ const CountryDetails = ({ name, capital, area, languages, flags }) => {
         ))}
       </ul>
       <img src={flags.png} alt="Coar of Arms" />
+      <WeatherInfo latlng={capitalInfo.latlng} />
     </div>
   );
 };
