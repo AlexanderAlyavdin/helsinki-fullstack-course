@@ -1,6 +1,7 @@
 const PersonForm = ({
   persons,
   onAdd,
+  onUpdate,
   newName,
   newPhone,
   onNewNameChange,
@@ -10,10 +11,18 @@ const PersonForm = ({
     <form
       onSubmit={(e) => {
         e.preventDefault();
-        if (!persons.find(({ name }) => name === newName)) {
-          onAdd(persons.concat({ name: newName, number: newPhone }));
+        const user = { name: newName, number: newPhone };
+        const existing = persons.find(({ name }) => name === newName);
+        if (!existing) {
+          onAdd(user);
         } else {
-          alert(`${newName} is already added to phonebook`);
+          if (
+            window.confirm(
+              `${user.name} is already added to phonebook, replace the old number with a new one?`
+            )
+          ) {
+            onUpdate({ ...existing, number: newPhone });
+          }
         }
       }}
     >

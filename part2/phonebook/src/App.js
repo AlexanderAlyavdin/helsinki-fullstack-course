@@ -1,18 +1,21 @@
+import "./index.css";
 import { useEffect, useState } from "react";
-import axios from "axios";
 import Filter from "./components/Filter";
-import Persons from "./components/Persons";
+import PersonList from "./components/Persons";
 import PersonForm from "./components/PersonForm";
+import Notification from "./components/Notification";
+import personService from "./services/personService";
 
 const App = () => {
   const [persons, setPersons] = useState([]);
   const [newName, setNewName] = useState("");
   const [newPhone, setNewPhone] = useState("");
   const [filter, setFilter] = useState("");
+  const [notification, setNotification] = useState(undefined);
 
   useEffect(() => {
-    axios.get("http://localhost:3001/persons").then((response) => {
-      setPersons(response.data);
+    personService.getAll().then((allPersons) => {
+      setPersons(allPersons);
     });
   }, []);
 
@@ -23,6 +26,8 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
+      {notification && <Notification message={notification} />}
+
       <Filter value={filter} onChange={setFilter} />
 
       <h3>Add a new</h3>
@@ -32,15 +37,37 @@ const App = () => {
         newPhone={newPhone}
         onNewNameChange={setNewName}
         onNewPhoneChange={setNewPhone}
-        onAdd={(newPersons) => {
-          setPersons(newPersons);
-          setNewName("");
-          setNewPhone("");
+        onAdd={(newPerson) => {
+          personService.add(newPerson).then((addedPerson) => {
+            setPersons(persons.concat(addedPerson));
+            setNewName("");
+            setNewPhone("");
+            setNotification(`Added ${addedPerson.name}`);
+            setTimeout(() => {
+              setNotification(undefined);
+            }, 5000);
+          });
+        }}
+        onUpdate={(person) => {
+          personService.update(person).then((updatedPerson) => {
+            setPersons(
+              persons.map((item) =>
+                item.id === updatedPerson.id ? updatedPerson : item
+              )
+            );
+          });
         }}
       />
 
       <h3>Numbers</h3>
-      <Persons persons={filtered} />
+      <PersonList
+        onDelete={(person) => {
+          personService.delete(person).then(() => {
+            setPersons(persons.filter((item) => item !== person));
+          });
+        }}
+        persons={filtered}
+      />
     </div>
   );
 };
