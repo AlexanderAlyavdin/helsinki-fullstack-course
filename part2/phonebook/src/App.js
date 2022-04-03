@@ -26,7 +26,7 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
-      {notification && <Notification message={notification} />}
+      {notification && <Notification notification={notification} />}
 
       <Filter value={filter} onChange={setFilter} />
 
@@ -42,20 +42,32 @@ const App = () => {
             setPersons(persons.concat(addedPerson));
             setNewName("");
             setNewPhone("");
-            setNotification(`Added ${addedPerson.name}`);
+            setNotification({
+              message: `Added ${addedPerson.name}`,
+              isError: false,
+            });
             setTimeout(() => {
               setNotification(undefined);
             }, 5000);
           });
         }}
         onUpdate={(person) => {
-          personService.update(person).then((updatedPerson) => {
-            setPersons(
-              persons.map((item) =>
-                item.id === updatedPerson.id ? updatedPerson : item
-              )
-            );
-          });
+          personService
+            .update(person)
+            .then((updatedPerson) => {
+              setPersons(
+                persons.map((item) =>
+                  item.id === updatedPerson.id ? updatedPerson : item
+                )
+              );
+            })
+            .catch((error) => {
+              setNotification({
+                message: `Information of ${person.name} has already been removed from server`,
+                isError: true,
+              });
+              setPersons(persons.filter((item) => item.id !== person.id));
+            });
         }}
       />
 
