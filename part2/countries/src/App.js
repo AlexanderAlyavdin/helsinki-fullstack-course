@@ -22,7 +22,7 @@ const App = () => {
       <h2>find countries</h2>
       <Filter value={filter} onChange={setFilter} />
 
-      <Countries countries={filtered} />
+      {countries.length > 0 && <Countries countries={filtered} />}
     </div>
   );
 };
